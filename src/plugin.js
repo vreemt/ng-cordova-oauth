@@ -1,9 +1,9 @@
 /*
  * Cordova AngularJS Oauth
  *
- * Created by Nic Raboy
+ * Modified by Sandra Koning
+ * Based on plugin Created by Nic Raboy
  * http://www.nraboy.com
- *
  *
  *
  * DESCRIPTION:
@@ -20,35 +20,8 @@
  *
  * SUPPORTS:
  *
- *    Dropbox
- *    Digital Ocean
- *    Google
- *    GitHub
- *    Facebook
- *    LinkedIn
- *    Instagram
- *    Box
- *    Reddit
- *    Twitter
- *    Meetup
- *    Salesforce
- *    Strava
- *    Withings
- *    Foursquare
- *    Magento
- *    vkontakte
- *    Odnoklassniki
- *    ADFS
- *    Imgur
- *    Spotify
- *    Uber
- *    Windows Live Connect
- *    Yammer
- *    Venmo
- *    Stripe
- *    Rally
- *    Family Search
- *    Envato
+ *    Autodata (based on Dropbox)
+ *
  */
 
 angular.module("ngCordovaOauth", [
