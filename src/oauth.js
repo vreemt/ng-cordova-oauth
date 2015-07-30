@@ -1,6 +1,6 @@
 angular.module("oauth.providers", ["oauth.utils"])
 
-    .factory("$cordovaOauth", ["$q", '$http', "$cordovaOauthUtility", function($q, $http, $cordovaOauthUtility) {
+    .factory("$cordovaOauth", ["$q", '$http', function($q, $http) {
 
         return {
 
@@ -15,23 +15,38 @@ angular.module("oauth.providers", ["oauth.utils"])
             autodata: function(appKey, options) {
                 var deferred = $q.defer();
                 if(window.cordova) {
+
+                    var isInAppBrowserInstalled = false;
                     var cordovaMetadata = cordova.require("cordova/plugin_list").metadata;
-                    if($cordovaOauthUtility.isInAppBrowserInstalled(cordovaMetadata) === true) {
-                        var redirect_uri = "http://localhost/callback";
+                    // Check to see if the mandatory InAppBrowser plugin is installed
+                    var inAppBrowserNames = ["cordova-plugin-inappbrowser", "org.apache.cordova.inappbrowser"];
+
+                    isInAppBrowserInstalled = inAppBrowserNames.some(function(name) {
+                            return cordovaMetadata.hasOwnProperty(name);
+                        });
+
+                    if(isInAppBrowserInstalled === true) {
+                        var redirect_uri = "https://localhost/callback";
+                        var search_method = "uk_vrm"; //UK reg only
                         if(options !== undefined) {
                             if(options.hasOwnProperty("redirect_uri")) {
                                 redirect_uri = options.redirect_uri;
                             }
                             if(!options.hasOwnProperty("search_string"))  {
-                                deferred.reject("No search terms found");
+                                deferred.reject("No search term found");
+                            }
+                            if(options.hasOwnProperty("search_method"))  {
+                                search_method = options.search_method;
                             }
                         } else {
                             deferred.reject("No options found");
                         }
-
+                        // Get OAuth access token
+                        //http://api.autodata-group.com/docs/v1/vehicles?id={search_string}&method={search_method}&country-code=gb&page=1&limit=20&api_key={appKey}
                         var completeRequestUri = requestUri.replace("{appKey}",appKey);
                         completeRequestUri = completeRequestUri.replace("{search_string}", options.search_string);
-                        var browserRef = window.open(completeRequestUri+"&response_type=token", "_blank", "location=no,clearsessioncache=yes,clearcache=yes");
+                        completeRequestUri = completeRequestUri.replace("{search_method}", options.search_method);
+                        var browserRef = window.open(completeRequestUri, "_blank", "location=no,clearsessioncache=yes,clearcache=yes");
                         browserRef.addEventListener("loadstart", function(event) {
                             if((event.url).indexOf(redirect_uri) === 0) {
                                 browserRef.removeEventListener("exit",function(event){});
@@ -71,7 +86,8 @@ angular.module("oauth.providers", ["oauth.utils"])
                 var deferred = $q.defer();
                 if(window.cordova) {
                     var cordovaMetadata = cordova.require("cordova/plugin_list").metadata;
-                    if($cordovaOauthUtility.isInAppBrowserInstalled(cordovaMetadata) === true) {
+                    //if($cordovaOauthUtility.isInAppBrowserInstalled(cordovaMetadata) === true) {
+                    if(true) {
                         var redirect_uri = "http://localhost/callback";
                         if(options !== undefined) {
                             if(options.hasOwnProperty("redirect_uri")) {
